@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Document</title>
+    </head>
+    <body>
+        <form onsubmit="addTodo(); return false">
+            <input type="text" placeholder="Neuer Todo" id="todoInput">
+            <button>Add Todo</button>
+        </form>
+<div id="todoList"></div>
+        <script>
+            let todos = [];
+            const url = 'http://localhost:3000/todos';
+
+            async function loadTodos() {
+                const url = `http:localhost:3000/todos`;
+                const response = await fetch(url);
+                todos = await response.json();
+                render();
+            }
+
+            function addTodo() {
+                const todoText = todoInput.value;
+                const newTodo = {
+                    id: Date.now(),
+                    title: todoText
+                }
+                todos.push(newTodo);
+
+                todoInput.value = '';
+                save();
+                render();
+            }
+
+            function addToServer() {
+                fetch('http://127.0.0.1:3000/todos', {
+                    body: JSON.stringify({ "title": todoText }),
+                    method: 'POST'
+                })
+            }
+
+            function save() {
+                fetch(url, {
+                    method: 'POST',
+                    body: JSON.stringify(todos),
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+            }
+
+            function render() {
+                todoList.innerHTML = '';
+                todos.forEach(todo => {
+                    todoList.innerHTML += `<li>${todo.title}</li>`;
+                });
+            }
+        </script>
+    </body>
+</html>
